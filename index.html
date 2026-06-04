@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jesús Ayuso — Creative Growth Marketer</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <style>
+    /* ─── RESET ─── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --yellow:     #FFD700;
+      --yellow-20:  rgba(255,215,0,0.2);
+      --yellow-10:  rgba(255,215,0,0.1);
+      --yellow-dim: rgba(255,215,0,0.55);
+      --dark:       #06060b;
+      --text:       #f0efee;
+      --text-dim:   rgba(240,239,238,0.55);
+      --glass-bg:   rgba(255,255,255,0.055);
+      --glass-bd:   rgba(255,255,255,0.11);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ─── TUNNEL CANVAS ─── */
+    #tunnel-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ─── METRO TOP NAV ─── */
+    .metro-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 24px;
+      height: 52px;
+      background: rgba(6,6,11,0.78);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,215,0,0.12);
+      overflow: hidden;
+    }
+
+    .metro-line-badge {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px;
+      letter-spacing: 4px;
+      color: var(--yellow);
+      flex-shrink: 0;
+      margin-right: 12px;
+    }
+
+    .nav-stops {
+      display: flex;
+      align-items: center;
+      flex: 1;
+    }
+
+    .nav-stop {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .nav-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255,215,0,0.2);
+      border: 1.5px solid rgba(255,215,0,0.35);
+      flex-shrink: 0;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .nav-stop.active .nav-dot {
+      background: var(--yellow);
+      box-shadow: 0 0 8px var(--yellow), 0 0 18px rgba(255,215,0,0.28);
+    }
+
+    .nav-label {
+      font-size: 8.5px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      padding: 0 9px;
+      transition: color 0.3s;
+      white-space: nowrap;
+    }
+
+    .nav-stop.active .nav-label { color: var(--yellow); }
+
+    .nav-line {
+      height: 1.5px;
+      width: 40px;
+      flex-shrink: 0;
+      background: linear-gradient(90deg, rgba(255,215,0,0.35), rgba(255,215,0,0.08));
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .station-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 7px;
+      color: var(--yellow-dim);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .hero-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(64px, 11vw, 148px);
+      line-height: 0.96;
+      text-align: center;
+      letter-spacing: -1px;
+      padding-top: 6px;
+      background: linear-gradient(175deg, #ffffff 25%, rgba(255,255,255,0.52) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 22px;
+    }
+
+    .hero-role {
+      font-size: 12px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 20px;
+    }
+
+    .hero-sep {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--yellow-dim), transparent);
+      margin: 0 auto 20px;
+    }
+
+    .hero-tagline {
+      font-size: 14px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+      margin-bottom: 56px;
+    }
+
+    .board-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      animation: floatY 2.4s ease-in-out infinite;
+    }
+
+    .board-label {
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .board-arrow {
+      width: 1.5px;
+      height: 44px;
+      background: linear-gradient(180deg, var(--yellow), transparent);
+    }
+
+    @keyframes floatY {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(10px); }
+    }
+
+    .station-floor {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,215,0,0.22) 30%, rgba(255,215,0,0.38) 50%, rgba(255,215,0,0.22) 70%, transparent 100%);
+    }
+
+    /* ─── TRAIN WRAPPER ─── */
+    .train-wrapper {
+      position: relative;
+      z-index: 10;
+    }
+
+    .train-track {
+      display: flex;
+      will-change: transform;
+    }
+
+    /* ─── WAGON ─── */
+    .wagon {
+      width: 100vw;
+      height: 100vh;
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 68px 56px 24px;
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    /* Timeline scrolls internally if too tall */
+    .timeline {
+      max-height: calc(100vh - 290px);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .wagon::before {
+      content: '';
+      position: absolute;
+      inset: 10px;
+      border: 1px solid rgba(255,215,0,0.045);
+      border-radius: 24px;
+      pointer-events: none;
+    }
+
+    .wagon-id {
+      position: absolute;
+      top: 26px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 10px;
+      letter-spacing: 5px;
+      color: rgba(255,215,0,0.18);
+      white-space: nowrap;
+    }
+
+    /* ─── GLASS CARD ─── */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(28px) saturate(160%);
+      -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border: 1px solid var(--glass-bd);
+      border-radius: 20px;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.13),
+        inset 0 -1px 0 rgba(0,0,0,0.12),
+        0 24px 64px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(255,255,255,0.035) inset;
+      position: relative;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      transform-style: preserve-3d;
+    }
+
+    /* top gloss sheen */
+    .glass::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 46%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.065) 0%, transparent 100%);
+      border-radius: 20px 20px 0 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ─── SECTION TAG ─── */
+    .tag {
+      font-size: 9px;
+      letter-spacing: 4px;
+      color: var(--yellow);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .tag::after {
+      content: '';
+      flex: 1;
+      max-width: 70px;
+      height: 1px;
+      background: rgba(255,215,0,0.18);
+    }
+
+    /* ─── BIG HEADING ─── */
+    .big-head {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(32px, 3.6vw, 52px);
+      line-height: 1.02;
+      padding-top: 4px;
+      background: linear-gradient(150deg, #fff 0%, rgba(255,255,255,0.55) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ══ VAGÓN 1 — ABOUT ══ */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+      max-width: 1100px;
+      width: 100%;
+      align-items: start;
+    }
+
+    .about-card { padding: 28px 36px; }
+
+    .about-body {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-dim);
+      margin: 12px 0 18px;
+    }
+    .about-body strong { color: var(--text); font-weight: 600; }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .stat {
+      padding: 10px 14px;
+      background: rgba(255,215,0,0.04);
+      border: 1px solid var(--yellow-10);
+      border-radius: 12px;
+    }
+
+    .stat-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      color: var(--yellow);
+      line-height: 1;
+    }
+
+    .stat-lbl {
+      font-size: 8.5px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-top: 3px;
+    }
+
+    .skills-card { padding: 28px 32px; }
+
+    .skill-group { margin-bottom: 16px; }
+    .skill-group:last-child { margin-bottom: 0; }
+
+    .sg-lbl {
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--yellow);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .skill-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 7px;
+    }
+
+    .skill-name {
+      font-size: 12.5px;
+      color: var(--text);
+      width: 148px;
+      flex-shrink: 0;
+    }
+
+    .bar-bg {
+      flex: 1;
+      height: 3px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--yellow), rgba(255,215,0,0.4));
+      border-radius: 2px;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      font-size: 10px;
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px;
+      transition: all 0.28s ease;
+      cursor: default;
+    }
+    .badge:hover {
+      background: var(--yellow-10);
+      border-color: var(--yellow-20);
+      color: var(--yellow);
+    }
+
+    /* ══ WORKS ══ */
+    .works-wrap { max-width: 1180px; width: 100%; }
+    .works-head { margin-bottom: 28px; }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .grid-mixed {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .work-card {
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .work-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.65s cubic-bezier(0.22,1,0.36,1);
+    }
+    .work-card:hover img { transform: scale(1.07); }
+
+    .work-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.9) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px 18px;
+      opacity: 0;
+      transition: opacity 0.36s ease;
+    }
+    .work-card:hover .work-overlay { opacity: 1; }
+
+    .wt { font-size: 8px; letter-spacing: 3px; color: var(--yellow); text-transform: uppercase; margin-bottom: 4px; }
+    .wh { font-family: 'Bebas Neue', sans-serif; font-size: 21px; line-height: 1.1; color: #fff; margin-bottom: 5px; }
+    .wd { font-size: 11px; line-height: 1.5; color: rgba(255,255,255,0.65); }
+
+    .tall      { aspect-ratio: 3 / 5; }
+    .portrait  { aspect-ratio: 3 / 4; }
+    .landscape { aspect-ratio: 16 / 9; min-height: 190px; }
+    .square    { aspect-ratio: 1 / 1; }
+
+    .video-strip {
+      margin-top: 16px;
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .play-btn {
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      background: var(--yellow-10);
+      border: 1px solid var(--yellow-20);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 15px;
+    }
+
+    /* ══ EXPERIENCE ══ */
+    .exp-wrap { max-width: 900px; width: 100%; }
+
+    .timeline {
+      position: relative;
+      margin-top: 22px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 110px;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, rgba(255,215,0,0.22) 8%, rgba(255,215,0,0.22) 92%, transparent);
+    }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      padding: 15px 24px 15px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .exp-item::before {
+      content: '';
+      position: absolute;
+      left: 104px; top: 22px;
+      width: 13px; height: 13px;
+      border-radius: 50%;
+      background: var(--yellow);
+      box-shadow: 0 0 10px rgba(255,215,0,0.55);
+    }
+
+    .exp-meta {
+      text-align: right;
+      padding-right: 26px;
+    }
+
+    .exp-period {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px;
+      color: var(--yellow);
+      line-height: 1.1;
+    }
+
+    .exp-company {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .exp-content {
+      padding-left: 22px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .exp-role {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.05;
+      word-break: break-word;
+    }
+
+    .exp-tasks {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .exp-tasks li {
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.4;
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+    }
+
+    .exp-tasks li::before {
+      content: '▸';
+      color: var(--yellow);
+      font-size: 9px;
+      flex-shrink: 0;
+    }
+
+    .edu-strip {
+      margin-top: 18px;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .edu-icon {
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    /* ══ CONTACT ══ */
+    .contact-wrap { max-width: 660px; width: 100%; text-align: center; }
+
+    .contact-card { padding: 40px 44px; }
+
+    .contact-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(40px, 5.5vw, 62px);
+      line-height: 1.0;
+      padding-top: 4px;
+      background: linear-gradient(150deg, #fff 0%, rgba(255,255,255,0.55) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 12px 0 26px;
+    }
+
+    .contact-sub {
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.75;
+      max-width: 400px;
+      margin: 0 auto 32px;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 20px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 13px;
+      transition: all 0.28s ease;
+      text-align: left;
+    }
+
+    .contact-link:hover {
+      background: var(--yellow-10);
+      border-color: var(--yellow-20);
+      color: var(--yellow);
+      transform: translateX(5px);
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 38px;
+      background: var(--yellow);
+      color: #000;
+      border: none;
+      border-radius: 100px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 28px rgba(255,215,0,0.25), 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 50px rgba(255,215,0,0.48), 0 8px 30px rgba(0,0,0,0.5);
+    }
+
+    .final-stamp {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 10px;
+      letter-spacing: 5px;
+      color: rgba(255,215,0,0.18);
+      margin-top: 40px;
+    }
+
+    /* ─── REVEAL UTIL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.25); border-radius: 2px; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; }
+      .grid-3     { grid-template-columns: repeat(2, 1fr); }
+      .wagon      { padding: 80px 24px 40px; }
+      .about-card, .skills-card { padding: 30px 26px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TUNNEL CANVAS -->
+<canvas id="tunnel-canvas"></canvas>
+
+<!-- METRO NAV -->
+<nav class="metro-nav">
+  <span class="metro-line-badge">LÍNEA&nbsp;J</span>
+  <div class="nav-stops" id="nav-stops"></div>
+</nav>
+
+<!-- ░░ HERO ░░ -->
+<section class="hero" id="hero">
+  <p class="station-label">Portfolio · Metro Madrid · Línea J</p>
+  <h1 class="hero-name">Jesús<br>Ayuso</h1>
+  <p class="hero-role">Creative Growth Marketer</p>
+  <div class="hero-sep"></div>
+  <p class="hero-tagline">Estrategia · Diseño · Resultados</p>
+
+  <div class="board-btn" onclick="document.getElementById('train-wrapper').scrollIntoView({behavior:'smooth'})">
+    <span class="board-label">Sube al tren</span>
+    <div class="board-arrow"></div>
+  </div>
+
+  <div class="station-floor"></div>
+</section>
+
+<!-- ░░ TRAIN ░░ -->
+<div class="train-wrapper" id="train-wrapper">
+  <div class="train-track" id="train-track">
+
+    <!-- ══════════════════════════════
+         VAGÓN 01 — SOBRE MÍ
+    ══════════════════════════════ -->
+    <section class="wagon" data-stop="Sobre mí">
+      <div class="wagon-id">VAGÓN 01 · SOBRE MÍ</div>
+      <div class="about-grid">
+
+        <div class="glass about-card reveal">
+          <div class="tag">Sobre mí</div>
+          <h2 class="big-head">El creativo<br>que hace que pase.</h2>
+          <p class="about-body">
+            Soy <strong>Jesús Ayuso</strong>, especialista en marketing creativo con experiencia real en <strong>estrategia digital</strong>, campañas de alto impacto, gestión de RRSS y contenido que convierte visibilidad en resultados. Me muevo igual de cómodo frente a Photoshop que diseñando una estrategia de Meta Ads — <strong>versatilidad y ejecución</strong>, no solo ideas.
+          </p>
+          <div class="stat-row">
+            <div class="stat">
+              <div class="stat-val">2+</div>
+              <div class="stat-lbl">Años activo</div>
+            </div>
+            <div class="stat">
+              <div class="stat-val">10+</div>
+              <div class="stat-lbl">Proyectos</div>
+            </div>
+            <div class="stat">
+              <div class="stat-val">4</div>
+              <div class="stat-lbl">Empresas</div>
+            </div>
+            <div class="stat">
+              <div class="stat-val">MAD</div>
+              <div class="stat-lbl">Base de operaciones</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass skills-card reveal">
+          <div class="tag">Habilidades</div>
+
+          <div class="skill-group">
+            <div class="sg-lbl">Technical Skills</div>
+            <div class="skill-row">
+              <span class="skill-name">Gestión de RRSS</span>
+              <div class="bar-bg"><div class="bar-fill" data-w="92"></div></div>
+            </div>
+            <div class="skill-row">
+              <span class="skill-name">Diseño Gráfico</span>
+              <div class="bar-bg"><div class="bar-fill" data-w="88"></div></div>
+            </div>
+            <div class="skill-row">
+              <span class="skill-name">IA Generativa</span>
+              <div class="bar-bg"><div class="bar-fill" data-w="86"></div></div>
+            </div>
+            <div class="skill-row">
+              <span class="skill-name">Edición de Vídeo</span>
+              <div class="bar-bg"><div class="bar-fill" data-w="80"></div></div>
+            </div>
+            <div class="skill-row">
+              <span class="skill-name">Meta Ads</span>
+              <div class="bar-bg"><div class="bar-fill" data-w="78"></div></div>
+            </div>
+            <div class="skill-row">
+              <span class="skill-name">SEO / SEM</span>
+              <div class="bar-bg"><div class="bar-fill" data-w="74"></div></div>
+            </div>
+            <div class="skill-row">
+              <span class="skill-name">Diseño Web</span>
+              <div class="bar-bg"><div class="bar-fill" data-w="72"></div></div>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <div class="sg-lbl">Software</div>
+            <div class="badges">
+              <span class="badge">Photoshop</span>
+              <span class="badge">Illustrator</span>
+              <span class="badge">Premiere Pro</span>
+              <span class="badge">Excel</span>
+              <span class="badge">HTML / CSS</span>
+              <span class="badge">Meta Business</span>
+              <span class="badge">ChatGPT / IA</span>
+              <span class="badge">CapCut</span>
+            </div>
+          </div>
+
+          <div class="skill-group">
+            <div class="sg-lbl">Soft Skills</div>
+            <div class="badges">
+              <span class="badge">Comunicación efectiva</span>
+              <span class="badge">Trabajo en equipo</span>
+              <span class="badge">Adaptabilidad</span>
+              <span class="badge">Resolución de problemas</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════
+         VAGÓN 02 — DISEÑO GRÁFICO
+    ══════════════════════════════ -->
+    <section class="wagon" data-stop="Diseño">
+      <div class="wagon-id">VAGÓN 02 · DISEÑO GRÁFICO</div>
+      <div class="works-wrap">
+        <div class="works-head reveal">
+          <div class="tag">Portfolio</div>
+          <h2 class="big-head">Diseño que<br>comunica.</h2>
+        </div>
+        <div class="grid-3">
+
+          <div class="glass work-card tall reveal" style="grid-row:span 2;">
+            <img src="potfolio/CARTEL Festival.png" alt="Cartel Innovati-On Festival">
+            <div class="work-overlay">
+              <div class="wt">Cartel · Festival de Tecnología</div>
+              <div class="wh">Innovati-On Festival</div>
+              <div class="wd">Cartel para festival de innovación tecnológica y cultura digital en la UCM. Concepto visual 3D con estética futurista — creatividad sin límites.</div>
+            </div>
+          </div>
+
+          <div class="glass work-card portrait reveal">
+            <img src="potfolio/flyer champions.jpg" alt="Final de Champions">
+            <div class="work-overlay">
+              <div class="wt">Flyer · Club Nocturno</div>
+              <div class="wh">Final de Champions</div>
+              <div class="wd">Evento temático de fútbol para Last Day Madrid. Energía, color y mensaje directo.</div>
+            </div>
+          </div>
+
+          <div class="glass work-card portrait reveal">
+            <img src="potfolio/flyer djs.jpg" alt="Duelo DJs Party">
+            <div class="work-overlay">
+              <div class="wt">Flyer · Club Nocturno</div>
+              <div class="wh">Duelo DJs Party</div>
+              <div class="wd">Diseño de alta energía para evento de DJs en Last Day. Atmósfera neón que invita a la pista.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════
+         VAGÓN 03 — EVENTOS
+    ══════════════════════════════ -->
+    <section class="wagon" data-stop="Eventos">
+      <div class="wagon-id">VAGÓN 03 · DISEÑO DE EVENTOS</div>
+      <div class="works-wrap">
+        <div class="works-head reveal">
+          <div class="tag">Portfolio</div>
+          <h2 class="big-head">Eventos que<br>se recuerdan.</h2>
+        </div>
+        <div class="grid-3">
+
+          <div class="glass work-card portrait reveal">
+            <img src="potfolio/flyer EVENTO.jpg" alt="El Gran Evento PlayFest">
+            <div class="work-overlay">
+              <div class="wt">Flyer · Evento Deportivo</div>
+              <div class="wh">El Gran Evento</div>
+              <div class="wd">Identidad visual para PlayFest en el Polideportivo de Alcorcón. Estética urbana y street style.</div>
+            </div>
+          </div>
+
+          <div class="glass work-card portrait reveal">
+            <img src="potfolio/flyer fotocall.jpg" alt="Photocall Halloween">
+            <div class="work-overlay">
+              <div class="wt">Flyer · Evento Temático</div>
+              <div class="wh">Halloween Photocall</div>
+              <div class="wd">Comunicación visual atmosférica para photocall de Halloween en Warren Studio.</div>
+            </div>
+          </div>
+
+          <div class="glass work-card portrait reveal">
+            <img src="potfolio/flyer piratas.jpg" alt="Pirate Party">
+            <div class="work-overlay">
+              <div class="wt">Flyer · Club Nocturno</div>
+              <div class="wh">Pirate Party</div>
+              <div class="wd">Flyer temático para Tiffany's en Last Day Madrid. Estética pirata con carácter premium.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════
+         VAGÓN 04 — CREATIVIDAD
+    ══════════════════════════════ -->
+    <section class="wagon" data-stop="Creativo">
+      <div class="wagon-id">VAGÓN 04 · CREATIVIDAD APLICADA</div>
+      <div class="works-wrap">
+        <div class="works-head reveal">
+          <div class="tag">Portfolio</div>
+          <h2 class="big-head">Creatividad<br>sin límites.</h2>
+        </div>
+        <div class="grid-mixed">
+
+          <div class="glass work-card square reveal">
+            <img src="potfolio/portada inmortal canción.jpg" alt="Portada Inmortal">
+            <div class="work-overlay">
+              <div class="wt">Portada Musical · Arte Conceptual</div>
+              <div class="wh">Inmortal</div>
+              <div class="wd">Portada para lanzamiento musical. Técnica mixta: acuarela digital y tipografía graffiti. Identidad visual única con carácter artístico propio.</div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:16px;">
+
+            <div class="glass work-card landscape reveal">
+              <img src="potfolio/vale regalo para estudio de tatuajes.jpg" alt="Vale Regalo Eterna Locura">
+              <div class="work-overlay">
+                <div class="wt">Diseño Publicitario</div>
+                <div class="wh">Vale Regalo — Eterna Locura</div>
+                <div class="wd">Material publicitario para estudio de tatuajes en Madrid. Estética dark y premium que conecta con el público objetivo.</div>
+              </div>
+            </div>
+
+            <div class="glass work-card landscape reveal">
+              <img src="potfolio/brienfing squacks.jpg" alt="Briefing Squock Garage">
+              <div class="work-overlay">
+                <div class="wt">Estrategia de Marca</div>
+                <div class="wh">Briefing Squock Garage</div>
+                <div class="wd">Definición completa de identidad de marca: misión, valores, público objetivo, tono de comunicación y paleta cromática.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="glass video-strip reveal" style="margin-top:16px;">
+          <div class="play-btn">▶</div>
+          <div>
+            <div style="font-size:9px;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-bottom:4px;">Edición de Vídeo</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:21px;color:#fff;line-height:1.1;">Vídeo para Agencia de Marketing</div>
+            <div style="font-size:11.5px;color:var(--text-dim);margin-top:4px;">Producción audiovisual completa — concepto, rodaje y edición final.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════
+         VAGÓN 05 — EXPERIENCIA
+    ══════════════════════════════ -->
+    <section class="wagon" data-stop="Experiencia">
+      <div class="wagon-id">VAGÓN 05 · EXPERIENCIA</div>
+      <div class="exp-wrap">
+
+        <div class="reveal" style="margin-bottom:6px;">
+          <div class="tag">Recorrido profesional</div>
+          <h2 class="big-head">Experiencia real.<br>Resultados reales.</h2>
+        </div>
+
+        <div class="glass timeline reveal" style="padding:0 0 6px;">
+
+          <div class="exp-item">
+            <div class="exp-meta">
+              <div class="exp-period">2024<br>2026</div>
+              <div class="exp-company">4digitalessence</div>
+            </div>
+            <div class="exp-content">
+              <div class="exp-role">Marketing Manager</div>
+              <ul class="exp-tasks">
+                <li>Diseño y producción de flyers y material gráfico para campañas digitales</li>
+                <li>Edición y retoque fotográfico de alto nivel para contenido de marca</li>
+                <li>Gestión de identidad visual y coherencia de marca</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="exp-item">
+            <div class="exp-meta">
+              <div class="exp-period">2025<br>2026</div>
+              <div class="exp-company">Círculo Veggie<br>Ortomecánica</div>
+            </div>
+            <div class="exp-content">
+              <div class="exp-role">Prácticas de Marketing</div>
+              <ul class="exp-tasks">
+                <li>Creación y calendarización de contenido para redes sociales</li>
+                <li>Diseño web y optimización SEO para mejorar visibilidad orgánica</li>
+                <li>Organización y comunicación de eventos presenciales</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="exp-item">
+            <div class="exp-meta">
+              <div class="exp-period">2024<br>2026</div>
+              <div class="exp-company">Samplia</div>
+            </div>
+            <div class="exp-content">
+              <div class="exp-role">Promotor de Ventas</div>
+              <ul class="exp-tasks">
+                <li>Activaciones de marca y campañas de sampling en punto de venta</li>
+                <li>Montaje y gestión de stands comerciales de alto tráfico</li>
+                <li>Comunicación directa con consumidores e incentivación de compra</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="glass edu-strip reveal">
+          <span class="edu-icon">🎓</span>
+          <div>
+            <div style="font-size:9px;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-bottom:4px;">Formación</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:19px;color:#fff;line-height:1.15;">Técnico Superior en Marketing y Publicidad</div>
+            <div style="font-size:11.5px;color:var(--text-dim);margin-top:3px;">Davante · Alcorcón, Madrid · 2024 – 2026</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════
+         VAGÓN 06 — CONTACTO
+    ══════════════════════════════ -->
+    <section class="wagon" data-stop="Contacto">
+      <div class="wagon-id">VAGÓN 06 · CONTACTO · ÚLTIMA PARADA</div>
+      <div class="contact-wrap">
+
+        <div class="glass contact-card reveal">
+
+          <div class="tag" style="justify-content:center;margin-bottom:10px;">Próxima parada</div>
+          <h2 class="contact-heading">Tu proyecto<br>empieza aquí.</h2>
+          <p class="contact-sub">
+            Si buscas a alguien que combine creatividad real, visión estratégica y capacidad de ejecutar — has llegado a la parada correcta. Hablemos.
+          </p>
+
+          <div class="contact-links">
+            <a href="tel:+34611151214" class="contact-link">
+              <span style="font-size:14px;width:20px;text-align:center;flex-shrink:0;">📞</span>
+              <span>+34 611 151 214</span>
+            </a>
+            <a href="mailto:jesus.ayuso@gmail.com" class="contact-link">
+              <span style="font-size:14px;width:20px;text-align:center;flex-shrink:0;">✉️</span>
+              <span>jesus.ayuso@gmail.com</span>
+            </a>
+            <div class="contact-link" style="cursor:default;">
+              <span style="font-size:14px;width:20px;text-align:center;flex-shrink:0;">📍</span>
+              <span>Madrid, España · Disponibilidad inmediata · Coche propio</span>
+            </div>
+          </div>
+
+          <a href="mailto:jesus.ayuso@gmail.com" class="cta-btn">
+            Contáctame ahora &nbsp;→
+          </a>
+
+          <p class="final-stamp">⬛ FIN DE LÍNEA · JESÚS AYUSO PRUDENCIO · MADRID 2026</p>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- /train-track -->
+</div><!-- /train-wrapper -->
+
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ══════════════════════════════════════
+   TUNNEL CANVAS
+══════════════════════════════════════ */
+const canvas = document.getElementById('tunnel-canvas');
+const ctx    = canvas.getContext('2d');
+let scrollP  = 0;
+let frame    = 0;
+
+function resizeCanvas() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function drawTunnel(p) {
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+
+  ctx.clearRect(0, 0, W, H);
+
+  /* Background */
+  const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.hypot(W, H) * 0.65);
+  bg.addColorStop(0,   '#0f0f22');
+  bg.addColorStop(0.5, '#07070f');
+  bg.addColorStop(1,   '#020204');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  /* Tunnel rings — move forward with scroll + passive drift */
+  const RINGS = 16;
+  for (let i = 0; i < RINGS; i++) {
+    const t     = ((i / RINGS) + frame * 0.0035 + p * 0.45) % 1;
+    const size  = 55 + t * 1800;
+    const alpha = (1 - t) * 0.12;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, size, size * 0.52, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255,215,0,${alpha})`;
+    ctx.lineWidth   = 1;
+    ctx.stroke();
+  }
+
+  /* Rail perspective lines */
+  const vpY = cy + H * 0.07;
+  [[-26, 0.20], [26, 0.20]].forEach(([ox, al]) => {
+    ctx.beginPath();
+    ctx.moveTo(cx + ox * 0.5, vpY);
+    ctx.lineTo(cx + ox * 16, H + 80);
+    ctx.strokeStyle = `rgba(255,215,0,${al})`;
+    ctx.lineWidth   = 1.5;
+    ctx.stroke();
+  });
+
+  /* Ceiling lights moving toward viewer */
+  for (let i = 0; i < 8; i++) {
+    const t   = ((i / 8) + frame * 0.0025 + p * 0.5) % 1;
+    const y   = cy * 0.4 + t * H * 0.95;
+    const x   = cx + (t - 0.5) * 60;
+    const r   = 2 + t * 10;
+    const al  = (1 - t) * 0.5;
+    const g   = ctx.createRadialGradient(x, y, 0, x, y, r * 8);
+    g.addColorStop(0, `rgba(255,248,190,${al * 0.9})`);
+    g.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.arc(x, y, r * 8, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,220,${al})`;
+    ctx.fill();
+  }
+}
+
+(function loop() {
+  frame++;
+  drawTunnel(scrollP);
+  requestAnimationFrame(loop);
+})();
+
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  scrollP = total > 0 ? window.scrollY / total : 0;
+});
+
+
+/* ══════════════════════════════════════
+   METRO NAV BUILD
+══════════════════════════════════════ */
+const wagons  = Array.from(document.querySelectorAll('.wagon[data-stop]'));
+const navEl   = document.getElementById('nav-stops');
+
+wagons.forEach((w, i) => {
+  const label = w.getAttribute('data-stop');
+
+  const stop = document.createElement('div');
+  stop.className = 'nav-stop';
+  stop.innerHTML = `<span class="nav-label">${label}</span><div class="nav-dot"></div>`;
+  stop.addEventListener('click', () => w.scrollIntoView({ behavior: 'smooth' }));
+  navEl.appendChild(stop);
+
+  if (i < wagons.length - 1) {
+    const line = document.createElement('div');
+    line.className = 'nav-line';
+    navEl.appendChild(line);
+  }
+});
+
+
+/* ══════════════════════════════════════
+   HORIZONTAL SCROLL — GSAP
+══════════════════════════════════════ */
+const track   = document.getElementById('train-track');
+const wrapper = document.getElementById('train-wrapper');
+
+const trainTween = gsap.to(track, {
+  x: () => -(track.scrollWidth - window.innerWidth),
+  ease: 'none',
+  scrollTrigger: {
+    trigger: wrapper,
+    start: 'top top',
+    end: () => '+=' + (track.scrollWidth - window.innerWidth),
+    pin: true,
+    scrub: 1.1,
+    invalidateOnRefresh: true,
+    onUpdate(self) {
+      const navDots = document.querySelectorAll('.nav-stop');
+      const idx = Math.round(self.progress * (wagons.length - 1));
+      navDots.forEach((el, i) => el.classList.toggle('active', i === idx));
+    }
+  }
+});
+
+
+/* ══════════════════════════════════════
+   REVEAL ANIMATIONS
+══════════════════════════════════════ */
+gsap.utils.toArray('.reveal').forEach(el => {
+  gsap.fromTo(el,
+    { opacity: 0, y: 44 },
+    {
+      opacity: 1, y: 0,
+      duration: 0.85,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: el,
+        containerAnimation: trainTween,
+        start: 'left 82%',
+        toggleActions: 'play none none reverse'
+      }
+    }
+  );
+});
+
+/* Skill bar fills */
+gsap.utils.toArray('.bar-fill').forEach(bar => {
+  gsap.to(bar, {
+    width: bar.dataset.w + '%',
+    duration: 1.5,
+    ease: 'power3.out',
+    scrollTrigger: {
+      trigger: bar,
+      containerAnimation: trainTween,
+      start: 'left 65%',
+      toggleActions: 'play none none reverse'
+    }
+  });
+});
+
+
+/* ══════════════════════════════════════
+   HERO ENTRANCE
+══════════════════════════════════════ */
+gsap.timeline({ delay: 0.25 })
+  .from('.station-label', { opacity: 0, y: -16, duration: 0.7,  ease: 'power3.out' })
+  .from('.hero-name',     { opacity: 0, y: 52,  duration: 1.0,  ease: 'power3.out' }, '-=0.3')
+  .from('.hero-role',     { opacity: 0, y: 16,  duration: 0.6,  ease: 'power3.out' }, '-=0.5')
+  .from('.hero-sep',      { scaleX: 0,           duration: 0.5,  ease: 'power2.out' }, '-=0.3')
+  .from('.hero-tagline',  { opacity: 0, y: 12,  duration: 0.5,  ease: 'power3.out' }, '-=0.3')
+  .from('.board-btn',     { opacity: 0, y: 14,  duration: 0.5,  ease: 'power3.out' }, '-=0.2');
+
+
+/* ══════════════════════════════════════
+   3D TILT — GLASS CARDS
+══════════════════════════════════════ */
+document.querySelectorAll('.glass').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r  = card.getBoundingClientRect();
+    const nx = (e.clientX - r.left)  / r.width  - 0.5;
+    const ny = (e.clientY - r.top)   / r.height - 0.5;
+    card.style.transform =
+      `perspective(1100px) rotateX(${-ny * 9}deg) rotateY(${nx * 9}deg) translateZ(6px)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform =
+      'perspective(1100px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+  });
+});
+
+
+/* ══════════════════════════════════════
+   RESIZE REFRESH
+══════════════════════════════════════ */
+window.addEventListener('resize', () => ScrollTrigger.refresh());
+</script>
+</body>
+</html>
