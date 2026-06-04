@@ -706,24 +706,154 @@
       transform: translateY(36px);
     }
 
-    /* ─── SCROLLBAR ─── */
+    /* ─── SCROLLBAR (desktop) ─── */
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--dark); }
     ::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.25); border-radius: 2px; }
 
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 900px) {
+    /* ══════════════════════════════════════
+       MOBILE — scroll horizontal nativo
+    ══════════════════════════════════════ */
+    @media (max-width: 768px) {
+
+      /* Hero usa altura dinámica de móvil */
+      .hero {
+        height: 100dvh;
+        min-height: -webkit-fill-available;
+      }
+
+      /* Tren: contenedor horizontal con snap */
+      .train-wrapper {
+        height: 100dvh;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+      }
+      /* Ocultar scrollbar horizontal */
+      .train-wrapper::-webkit-scrollbar { display: none; }
+      .train-wrapper { scrollbar-width: none; }
+
+      .train-track {
+        display: flex;
+        /* No GSAP transform en móvil */
+        transform: none !important;
+      }
+
+      /* Vagón ocupa pantalla completa y hace snap */
+      .wagon {
+        width: 100vw;
+        height: 100dvh;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 58px 16px 16px;
+        align-items: flex-start;
+      }
+      .wagon::before { display: none; }
+
+      /* Layouts en 1 columna */
+      .about-grid { grid-template-columns: 1fr; gap: 14px; }
+      .about-card  { padding: 20px 18px; }
+      .skills-card { padding: 20px 18px; }
+      .about-body  { font-size: 12.5px; margin: 10px 0 14px; }
+      .stat-row    { grid-template-columns: repeat(4,1fr); gap: 8px; }
+      .stat-val    { font-size: 22px; }
+      .stat        { padding: 8px 10px; }
+
+      /* Skills más compactas */
+      .skill-name  { width: 110px; font-size: 11.5px; }
+      .skill-group { margin-bottom: 12px; }
+
+      /* Works grids */
+      .works-wrap  { max-width: 100%; }
+      .works-head  { margin-bottom: 16px; }
+      .grid-3      { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .grid-mixed  { gap: 10px; }
+      /* Quitar span en la tall card */
+      .work-card[style*="grid-row"] { grid-row: span 1 !important; }
+      .tall { aspect-ratio: 3/4; }
+
+      /* Experiencia */
+      .exp-wrap { max-width: 100%; }
+      .exp-item { grid-template-columns: 85px 1fr; padding: 12px 12px 12px 0; }
+      .exp-item::before { left: 80px; top: 18px; }
+      .timeline::before { left: 80px; }
+      .exp-role   { font-size: 18px; }
+      .exp-tasks li { font-size: 10.5px; }
+      .timeline   { max-height: calc(100dvh - 220px); }
+      .edu-strip  { padding: 14px 16px; }
+
+      /* Contacto */
+      .contact-wrap { max-width: 100%; }
+      .contact-card { padding: 26px 18px; }
+      .contact-heading { font-size: clamp(36px,9vw,52px); }
+      .contact-sub { font-size: 12.5px; margin-bottom: 20px; }
+      .contact-links { gap: 8px; margin-bottom: 20px; }
+      .cta-btn { padding: 14px 28px; font-size: 11.5px; }
+
+      /* Nav móvil */
+      .metro-nav { padding: 0 12px; }
+      .metro-line-badge { font-size: 11px; margin-right: 6px; }
+      .nav-label { font-size: 7px; padding: 0 4px; }
+      .nav-line  { width: 12px; }
+      .nav-dot   { width: 7px; height: 7px; }
+
+      /* Big heading más pequeño */
+      .big-head { font-size: clamp(28px, 7.5vw, 42px); }
+
+      /* Glassmorfismo */
+      .glass { backdrop-filter: blur(16px) saturate(140%); -webkit-backdrop-filter: blur(16px) saturate(140%); }
+
+      /* Ocultar decoraciones de vagón */
+      .wagon-id { display: none; }
+
+      /* Swipe hint */
+      .swipe-hint {
+        display: flex !important;
+        align-items: center;
+        gap: 6px;
+        position: fixed;
+        bottom: 18px;
+        right: 18px;
+        z-index: 300;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: rgba(255,215,0,0.5);
+        text-transform: uppercase;
+        animation: hintFade 3s ease 1.5s forwards;
+        opacity: 0;
+        pointer-events: none;
+      }
+      @keyframes hintFade {
+        0%   { opacity: 0; transform: translateX(0); }
+        20%  { opacity: 1; }
+        60%  { opacity: 1; transform: translateX(-8px); }
+        100% { opacity: 0; transform: translateX(-8px); }
+      }
+    }
+
+    /* ─── RESPONSIVE 900px (tablet) ─── */
+    @media (min-width: 769px) and (max-width: 900px) {
       .about-grid { grid-template-columns: 1fr; }
       .grid-3     { grid-template-columns: repeat(2, 1fr); }
-      .wagon      { padding: 80px 24px 40px; }
-      .about-card, .skills-card { padding: 30px 26px; }
+      .wagon      { padding: 80px 28px 32px; }
+      .about-card, .skills-card { padding: 28px 24px; }
     }
+
+    /* Hint: oculto en desktop */
+    .swipe-hint { display: none; }
   </style>
 </head>
 <body>
 
 <!-- TUNNEL CANVAS -->
 <canvas id="tunnel-canvas"></canvas>
+
+<!-- SWIPE HINT (móvil) -->
+<div class="swipe-hint" id="swipe-hint">desliza &nbsp;→</div>
 
 <!-- METRO NAV -->
 <nav class="metro-nav">
@@ -1127,155 +1257,73 @@ window.addEventListener('resize', resizeCanvas);
 function drawTunnel(p) {
   const W = canvas.width, H = canvas.height;
   const cx = W / 2, cy = H / 2;
-
   ctx.clearRect(0, 0, W, H);
-
-  /* Background */
   const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.hypot(W, H) * 0.65);
-  bg.addColorStop(0,   '#0f0f22');
-  bg.addColorStop(0.5, '#07070f');
-  bg.addColorStop(1,   '#020204');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, W, H);
-
-  /* Tunnel rings — move forward with scroll + passive drift */
+  bg.addColorStop(0, '#0f0f22'); bg.addColorStop(0.5, '#07070f'); bg.addColorStop(1, '#020204');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
   const RINGS = 16;
   for (let i = 0; i < RINGS; i++) {
-    const t     = ((i / RINGS) + frame * 0.0035 + p * 0.45) % 1;
-    const size  = 55 + t * 1800;
-    const alpha = (1 - t) * 0.12;
+    const t = ((i / RINGS) + frame * 0.0035 + p * 0.45) % 1;
+    const size = 55 + t * 1800;
     ctx.beginPath();
     ctx.ellipse(cx, cy, size, size * 0.52, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(255,215,0,${alpha})`;
-    ctx.lineWidth   = 1;
-    ctx.stroke();
+    ctx.strokeStyle = `rgba(255,215,0,${(1 - t) * 0.12})`;
+    ctx.lineWidth = 1; ctx.stroke();
   }
-
-  /* Rail perspective lines */
   const vpY = cy + H * 0.07;
   [[-26, 0.20], [26, 0.20]].forEach(([ox, al]) => {
-    ctx.beginPath();
-    ctx.moveTo(cx + ox * 0.5, vpY);
-    ctx.lineTo(cx + ox * 16, H + 80);
-    ctx.strokeStyle = `rgba(255,215,0,${al})`;
-    ctx.lineWidth   = 1.5;
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx + ox * 0.5, vpY); ctx.lineTo(cx + ox * 16, H + 80);
+    ctx.strokeStyle = `rgba(255,215,0,${al})`; ctx.lineWidth = 1.5; ctx.stroke();
   });
-
-  /* Ceiling lights moving toward viewer */
   for (let i = 0; i < 8; i++) {
-    const t   = ((i / 8) + frame * 0.0025 + p * 0.5) % 1;
-    const y   = cy * 0.4 + t * H * 0.95;
-    const x   = cx + (t - 0.5) * 60;
-    const r   = 2 + t * 10;
-    const al  = (1 - t) * 0.5;
-    const g   = ctx.createRadialGradient(x, y, 0, x, y, r * 8);
-    g.addColorStop(0, `rgba(255,248,190,${al * 0.9})`);
-    g.addColorStop(1, 'transparent');
-    ctx.beginPath();
-    ctx.arc(x, y, r * 8, 0, Math.PI * 2);
-    ctx.fillStyle = g;
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,255,220,${al})`;
-    ctx.fill();
+    const t = ((i / 8) + frame * 0.0025 + p * 0.5) % 1;
+    const y = cy * 0.4 + t * H * 0.95, x = cx + (t - 0.5) * 60;
+    const r = 2 + t * 10, al = (1 - t) * 0.5;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r * 8);
+    g.addColorStop(0, `rgba(255,248,190,${al * 0.9})`); g.addColorStop(1, 'transparent');
+    ctx.beginPath(); ctx.arc(x, y, r * 8, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,220,${al})`; ctx.fill();
   }
 }
+(function loop() { frame++; drawTunnel(scrollP); requestAnimationFrame(loop); })();
 
-(function loop() {
-  frame++;
-  drawTunnel(scrollP);
-  requestAnimationFrame(loop);
-})();
 
-window.addEventListener('scroll', () => {
-  const total = document.body.scrollHeight - window.innerHeight;
-  scrollP = total > 0 ? window.scrollY / total : 0;
-});
+/* ══════════════════════════════════════
+   DETECTAR MÓVIL
+══════════════════════════════════════ */
+const MOBILE = window.matchMedia('(max-width: 768px)').matches;
+const wagons  = Array.from(document.querySelectorAll('.wagon[data-stop]'));
+const navEl   = document.getElementById('nav-stops');
+const wrapper = document.getElementById('train-wrapper');
+const track   = document.getElementById('train-track');
+
+function updateNav(idx) {
+  document.querySelectorAll('.nav-stop').forEach((el, i) =>
+    el.classList.toggle('active', i === idx));
+}
 
 
 /* ══════════════════════════════════════
    METRO NAV BUILD
 ══════════════════════════════════════ */
-const wagons  = Array.from(document.querySelectorAll('.wagon[data-stop]'));
-const navEl   = document.getElementById('nav-stops');
-
 wagons.forEach((w, i) => {
-  const label = w.getAttribute('data-stop');
-
   const stop = document.createElement('div');
   stop.className = 'nav-stop';
-  stop.innerHTML = `<span class="nav-label">${label}</span><div class="nav-dot"></div>`;
-  stop.addEventListener('click', () => w.scrollIntoView({ behavior: 'smooth' }));
+  stop.innerHTML = `<span class="nav-label">${w.getAttribute('data-stop')}</span><div class="nav-dot"></div>`;
+  stop.addEventListener('click', () => {
+    if (MOBILE) {
+      wrapper.scrollTo({ left: window.innerWidth * i, behavior: 'smooth' });
+    } else {
+      w.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
   navEl.appendChild(stop);
-
   if (i < wagons.length - 1) {
     const line = document.createElement('div');
     line.className = 'nav-line';
     navEl.appendChild(line);
   }
-});
-
-
-/* ══════════════════════════════════════
-   HORIZONTAL SCROLL — GSAP
-══════════════════════════════════════ */
-const track   = document.getElementById('train-track');
-const wrapper = document.getElementById('train-wrapper');
-
-const trainTween = gsap.to(track, {
-  x: () => -(track.scrollWidth - window.innerWidth),
-  ease: 'none',
-  scrollTrigger: {
-    trigger: wrapper,
-    start: 'top top',
-    end: () => '+=' + (track.scrollWidth - window.innerWidth),
-    pin: true,
-    scrub: 1.1,
-    invalidateOnRefresh: true,
-    onUpdate(self) {
-      const navDots = document.querySelectorAll('.nav-stop');
-      const idx = Math.round(self.progress * (wagons.length - 1));
-      navDots.forEach((el, i) => el.classList.toggle('active', i === idx));
-    }
-  }
-});
-
-
-/* ══════════════════════════════════════
-   REVEAL ANIMATIONS
-══════════════════════════════════════ */
-gsap.utils.toArray('.reveal').forEach(el => {
-  gsap.fromTo(el,
-    { opacity: 0, y: 44 },
-    {
-      opacity: 1, y: 0,
-      duration: 0.85,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: el,
-        containerAnimation: trainTween,
-        start: 'left 82%',
-        toggleActions: 'play none none reverse'
-      }
-    }
-  );
-});
-
-/* Skill bar fills */
-gsap.utils.toArray('.bar-fill').forEach(bar => {
-  gsap.to(bar, {
-    width: bar.dataset.w + '%',
-    duration: 1.5,
-    ease: 'power3.out',
-    scrollTrigger: {
-      trigger: bar,
-      containerAnimation: trainTween,
-      start: 'left 65%',
-      toggleActions: 'play none none reverse'
-    }
-  });
 });
 
 
@@ -1292,27 +1340,97 @@ gsap.timeline({ delay: 0.25 })
 
 
 /* ══════════════════════════════════════
-   3D TILT — GLASS CARDS
+   MÓVIL — scroll horizontal CSS snap
 ══════════════════════════════════════ */
-document.querySelectorAll('.glass').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const r  = card.getBoundingClientRect();
-    const nx = (e.clientX - r.left)  / r.width  - 0.5;
-    const ny = (e.clientY - r.top)   / r.height - 0.5;
-    card.style.transform =
-      `perspective(1100px) rotateX(${-ny * 9}deg) rotateY(${nx * 9}deg) translateZ(6px)`;
-  });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform =
-      'perspective(1100px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
-  });
-});
+if (MOBILE) {
 
+  /* Mostrar todos los reveals directamente (IntersectionObserver por vagón) */
+  const triggerWagonAnimations = (wagonEl) => {
+    wagonEl.querySelectorAll('.reveal').forEach(el => {
+      el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+      el.style.opacity    = '1';
+      el.style.transform  = 'none';
+    });
+    wagonEl.querySelectorAll('.bar-fill').forEach(bar => {
+      bar.style.transition = 'width 1.4s cubic-bezier(0.22,1,0.36,1)';
+      bar.style.width      = bar.dataset.w + '%';
+    });
+  };
+
+  /* Primer vagón visible al cargar */
+  setTimeout(() => triggerWagonAnimations(wagons[0]), 400);
+
+  /* Actualizar nav y animar vagón al deslizar */
+  wrapper.addEventListener('scroll', () => {
+    const idx = Math.round(wrapper.scrollLeft / window.innerWidth);
+    updateNav(idx);
+    triggerWagonAnimations(wagons[idx]);
+    scrollP = wrapper.scrollLeft / (wrapper.scrollWidth - wrapper.clientWidth) || 0;
+  }, { passive: true });
+
+  /* "Sube al tren" → scroll a primer vagón */
+  document.querySelector('.board-btn').addEventListener('click', () => {
+    wrapper.scrollIntoView({ behavior: 'smooth' });
+  });
 
 /* ══════════════════════════════════════
-   RESIZE REFRESH
+   DESKTOP — GSAP horizontal scroll
 ══════════════════════════════════════ */
-window.addEventListener('resize', () => ScrollTrigger.refresh());
+} else {
+
+  /* Scroll progress para el túnel */
+  window.addEventListener('scroll', () => {
+    const total = document.body.scrollHeight - window.innerHeight;
+    scrollP = total > 0 ? window.scrollY / total : 0;
+  });
+
+  const trainTween = gsap.to(track, {
+    x: () => -(track.scrollWidth - window.innerWidth),
+    ease: 'none',
+    scrollTrigger: {
+      trigger: wrapper,
+      start: 'top top',
+      end: () => '+=' + (track.scrollWidth - window.innerWidth),
+      pin: true,
+      scrub: 1.1,
+      invalidateOnRefresh: true,
+      onUpdate(self) {
+        updateNav(Math.round(self.progress * (wagons.length - 1)));
+      }
+    }
+  });
+
+  gsap.utils.toArray('.reveal').forEach(el => {
+    gsap.fromTo(el, { opacity: 0, y: 44 }, {
+      opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
+      scrollTrigger: { trigger: el, containerAnimation: trainTween,
+        start: 'left 82%', toggleActions: 'play none none reverse' }
+    });
+  });
+
+  gsap.utils.toArray('.bar-fill').forEach(bar => {
+    gsap.to(bar, { width: bar.dataset.w + '%', duration: 1.5, ease: 'power3.out',
+      scrollTrigger: { trigger: bar, containerAnimation: trainTween,
+        start: 'left 65%', toggleActions: 'play none none reverse' }
+    });
+  });
+
+  /* 3D Tilt — solo en desktop */
+  document.querySelectorAll('.glass').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width  - 0.5;
+      const ny = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transform =
+        `perspective(1100px) rotateX(${-ny * 9}deg) rotateY(${nx * 9}deg) translateZ(6px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1100px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+    });
+  });
+
+  window.addEventListener('resize', () => ScrollTrigger.refresh());
+}
 </script>
 </body>
 </html>
